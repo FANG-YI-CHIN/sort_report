@@ -2,54 +2,96 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>JavaScript 氣泡排序法範例</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主頁 - 程式練習</title>
     <style>
-        body { font-family: sans-serif; line-height: 1.6; padding: 20px; }
-        .code-box { background: #f4f4f4; padding: 15px; border-radius: 5px; border-left: 5px solid #2196F3; }
-        #result { margin-top: 20px; font-weight: bold; color: #d32f2f; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft JhengHei', 'Arial', sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        
+        .links-section {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .link-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: white;
+            display: block;
+        }
+        
+        .link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .link-card h2 {
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+        
+        .link-card p {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+        
+        .icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
-
-    <h2>氣泡排序法 (Bubble Sort)</h2>
-    <p>原始陣列：[64, 34, 25, 12, 22, 11, 90]</p>
-    
-    <div class="code-box">
-        請打開瀏覽器開發者工具 (F12) 的 <strong>Console</strong> 查看排序過程。
+    <div class="container">
+        <h1>📚 程式練習</h1>
+        <p class="subtitle">選擇要瀏覽的頁面</p>
+        
+        <div class="links-section">
+            <a href="0309.html" class="link-card">
+                <div class="icon">🔄</div>
+                <h2>氣泡排序法</h2>
+                <p>JavaScript 氣泡排序法範例</p>
+            </a>
+        </div>
     </div>
-
-    <div id="result"></div>
-
-    <script>
-        function bubbleSort(arr) {
-            let n = arr.length;
-            let temp;
-            
-            // 外層迴圈：控制比較的輪數
-            for (let i = 0; i < n - 1; i++) {
-                // 內層迴圈：進行相鄰元素的比較與交換
-                // 每跑完一輪，最大的數會被移到最後面，所以 j < n - 1 - i
-                for (let j = 0; j < n - 1 - i; j++) {
-                    if (arr[j] > arr[j + 1]) {
-                        // 交換元素
-                        temp = arr[j];
-                        arr[j] = arr[j + 1];
-                        arr[j + 1] = temp;
-                        
-                        console.log(`交換中: ${arr}`);
-                    }
-                }
-                console.log(`第 ${i + 1} 輪結束: ${arr}`);
-            }
-            return arr;
-        }
-
-        // 測試資料
-        const data = [64, 34, 25, 12, 22, 11, 90];
-        const sortedData = bubbleSort([...data]); // 使用展開運算子避免改到原陣列
-
-        // 顯示結果到網頁上
-        document.getElementById('result').innerText = "排序後的結果：" + sortedData.join(', ');
-    </script>
 </body>
 </html>
