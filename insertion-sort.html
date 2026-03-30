@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JavaScript 氣泡排序法範例</title>
+    <title>JavaScript 插入排序法範例</title>
     <style>
         body {
             font-family: 'Microsoft JhengHei', 'Arial', sans-serif;
@@ -82,7 +82,7 @@
 <body>
     <a href="index.html" class="back-button">回首頁</a>
     <div class="container">
-        <h1>氣泡排序法 (Bubble Sort)</h1>
+        <h1>插入排序法 (Insertion Sort)</h1>
         <p class="description">原始陣列：[64, 34, 25, 12, 22, 11, 90]</p>
 
         <div class="code-box">
@@ -119,23 +119,21 @@
             }
         }
 
-        function bubbleSort(arr) {
+        function insertionSort(arr) {
             let n = arr.length;
             steps = [{ array: [...arr], highlight: [] }];
-            for (let i = 0; i < n - 1; i++) {
-                for (let j = 0; j < n - 1 - i; j++) {
-                    steps.push({ array: [...arr], highlight: [j, j + 1] });
-                    if (arr[j] > arr[j + 1]) {
-                        // 交換元素
-                        let temp = arr[j];
-                        arr[j] = arr[j + 1];
-                        arr[j + 1] = temp;
-                        steps.push({ array: [...arr], highlight: [j, j + 1] });
-                        console.log(`交換中: ${arr}`);
-                    }
+            for (let i = 1; i < n; i++) {
+                let key = arr[i];
+                let j = i - 1;
+                steps.push({ array: [...arr], highlight: [i] });
+                while (j >= 0 && arr[j] > key) {
+                    arr[j + 1] = arr[j];
+                    j = j - 1;
+                    steps.push({ array: [...arr], highlight: [j + 1, j + 2] });
                 }
-                console.log(`第 ${i + 1} 輪結束: ${arr}`);
-                steps.push({ array: [...arr], highlight: [] });
+                arr[j + 1] = key;
+                steps.push({ array: [...arr], highlight: [j + 1] });
+                console.log(`第 ${i} 步後: ${arr}`);
             }
             steps.push({ array: [...arr], highlight: [] });
             return arr;
@@ -143,7 +141,7 @@
 
         function startSort() {
             data = [64, 34, 25, 12, 22, 11, 90];
-            bubbleSort([...data]);
+            insertionSort([...data]);
             currentStep = 0;
             if (interval) clearInterval(interval);
             interval = setInterval(() => {
