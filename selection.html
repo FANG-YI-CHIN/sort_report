@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>氣泡排序 - 展示</title>
+    <title>選擇排序 - 展示</title>
     <style>
+        /* 樣式同上，省略以節省空間，請複製 0309.html 的 style */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; color: #333; }
         .container { background: white; border-radius: 15px; max-width: 800px; margin: 0 auto; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
@@ -13,44 +14,48 @@
         .visualizer { display: flex; align-items: flex-end; justify-content: center; height: 200px; gap: 8px; margin: 20px 0; background: #f8f9fa; padding: 20px; border-radius: 10px; }
         .bar { background: #764ba2; width: 35px; transition: 0.1s; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; border-radius: 4px 4px 0 0; }
         .bar.active { background: #ff4757; }
+        .bar.min { background: #2ecc71; }
         .controls { text-align: center; margin: 20px 0; }
         button { padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
-        pre { background: #2d3436; color: #fab1a0; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.9em; }
+        pre { background: #2d3436; color: #81ecec; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.9em; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="nav"><a href="index.html">← 返回首頁</a></div>
-        <h1>🔄 氣泡排序法 (Bubble Sort)</h1>
-        <p>比較相鄰元素，若順序錯誤則交換，較大的數會像氣泡一樣浮到末端。</p>
+        <h1>🎯 選擇排序法 (Selection Sort)</h1>
+        <p>每次從未排序區域找出最小值，並與該區域第一個元素交換。</p>
         <div class="controls">
             速度：<input type="range" id="speed" min="50" max="1000" value="500">
             <button onclick="startSort()">開始排序</button>
             <button onclick="reset()" style="background:#ccc; color:#333;">重置</button>
         </div>
         <div id="viz" class="visualizer"></div>
-        <pre>if (arr[j] > arr[j+1]) swap(arr[j], arr[j+1]);</pre>
+        <pre>minIdx = findMin(arr, i, n); swap(arr[i], arr[minIdx]);</pre>
     </div>
     <script>
-        let data = [60, 20, 90, 40, 70, 10, 50];
-        function render(active = []) {
+        let data = [45, 12, 89, 34, 67, 23, 56];
+        function render(active = [], minIdx = -1) {
             const viz = document.getElementById('viz'); viz.innerHTML = '';
             data.forEach((v, i) => {
-                const b = document.createElement('div'); b.className = 'bar' + (active.includes(i) ? ' active' : '');
+                const b = document.createElement('div'); 
+                b.className = 'bar' + (active.includes(i) ? ' active' : '') + (i === minIdx ? ' min' : '');
                 b.style.height = v * 2 + 'px'; b.innerText = v; viz.appendChild(b);
             });
         }
         async function startSort() {
             for (let i = 0; i < data.length - 1; i++) {
-                for (let j = 0; j < data.length - i - 1; j++) {
-                    render([j, j + 1]);
+                let m = i;
+                for (let j = i + 1; j < data.length; j++) {
+                    render([j], m);
                     await new Promise(r => setTimeout(r, 1050 - document.getElementById('speed').value));
-                    if (data[j] > data[j+1]) [data[j], data[j+1]] = [data[j+1], data[j]];
+                    if (data[j] < data[m]) m = j;
                 }
+                [data[i], data[m]] = [data[m], data[i]];
             }
             render(); alert("完成！");
         }
-        function reset() { data = [60, 20, 90, 40, 70, 10, 50]; render(); }
+        function reset() { data = [45, 12, 89, 34, 67, 23, 56]; render(); }
         render();
     </script>
 </body>

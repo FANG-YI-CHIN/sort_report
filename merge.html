@@ -3,199 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>合併排序法 - 程式練習</title>
+    <title>合併排序 - 展示</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Microsoft JhengHei', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 40px 20px;
-            color: #333;
-        }
-
-        .container {
-            background: white;
-            border-radius: 15px;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #444;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            text-decoration: none;
-            color: #667eea;
-            font-weight: bold;
-        }
-
-        .visualizer {
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            height: 220px;
-            gap: 10px;
-            margin: 30px 0;
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-        }
-
-        .bar {
-            background: #764ba2;
-            width: 35px;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 11px;
-            border-radius: 5px;
-        }
-
-        .bar.active { background: #ff4757; } /* 目前處理中的區段 */
-        .bar.sorted { background: #2ecc71; } /* 已合併完成的區段 */
-
-        .control-panel {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        button {
-            padding: 10px 25px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: 0.3s;
-        }
-
-        button:hover { background: #764ba2; }
-
-        pre {
-            background: #2d3436;
-            color: #fdcb6e;
-            padding: 20px;
-            border-radius: 8px;
-            overflow-x: auto;
-            font-family: 'Consolas', monospace;
-            line-height: 1.5;
-            font-size: 0.9em;
-        }
+        /* 樣式同 0309.html */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; color: #333; }
+        .container { background: white; border-radius: 15px; max-width: 800px; margin: 0 auto; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .nav { margin-bottom: 20px; }
+        .nav a { text-decoration: none; color: #667eea; font-weight: bold; }
+        .visualizer { display: flex; align-items: flex-end; justify-content: center; height: 200px; gap: 8px; margin: 20px 0; background: #f8f9fa; padding: 20px; border-radius: 10px; }
+        .bar { background: #764ba2; width: 35px; transition: 0.1s; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; border-radius: 4px 4px 0 0; }
+        .bar.active { background: #ff4757; }
+        .controls { text-align: center; margin: 20px 0; }
+        button { padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        pre { background: #2d3436; color: #fdcb6e; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.9em; }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <a href="index.html" class="back-link">← 返回主頁</a>
+        <div class="nav"><a href="index.html">← 返回首頁</a></div>
         <h1>🧩 合併排序法 (Merge Sort)</h1>
-        
-        <div class="control-panel">
-            <button id="startBtn" onclick="runMergeSort()">開始合併排序</button>
-            <button onclick="resetArray()" style="background:#ccc; color:#333; margin-left:10px;">重置數組</button>
+        <p>分而治之：將數組對半拆分到最小，再兩兩依照順序合併回完整的有序數組。</p>
+        <div class="controls">
+            速度：<input type="range" id="speed" min="50" max="1000" value="500">
+            <button onclick="runSort()">開始排序</button>
+            <button onclick="reset()" style="background:#ccc; color:#333;">重置</button>
         </div>
-
-        <div class="visualizer" id="visualizer"></div>
-
-        <h3>邏輯說明：</h3>
-        <p style="margin: 15px 0;">採用「分而治之」法：不斷將數組對半拆解直到剩一個數字，再兩兩依照順序合併。時間複雜度穩定在 $O(n \log n)$，適合處理大數據。</p>
-
-        <h3>JavaScript 遞迴實作：</h3>
-        <pre>
-async function mergeSort(arr, start, end) {
-    if (start >= end) return;
-    let mid = Math.floor((start + end) / 2);
-    
-    await mergeSort(arr, start, mid);    // 左半部
-    await mergeSort(arr, mid + 1, end); // 右半部
-    await merge(arr, start, mid, end);  // 合併
-}
-        </pre>
+        <div id="viz" class="visualizer"></div>
+        <pre>mergeSort(left); mergeSort(right); merge(left, right);</pre>
     </div>
-
     <script>
         let data = [38, 27, 43, 3, 9, 82, 10];
-        const visualizer = document.getElementById('visualizer');
-
-        function render(activeIndices = [], sortedIndices = []) {
-            visualizer.innerHTML = '';
-            data.forEach((val, index) => {
-                const bar = document.createElement('div');
-                bar.className = 'bar';
-                if (activeIndices.includes(index)) bar.classList.add('active');
-                if (sortedIndices.includes(index)) bar.classList.add('sorted');
-                bar.style.height = val * 2 + 'px';
-                bar.innerText = val;
-                visualizer.appendChild(bar);
+        function render(active = []) {
+            const viz = document.getElementById('viz'); viz.innerHTML = '';
+            data.forEach((v, i) => {
+                const b = document.createElement('div'); b.className = 'bar' + (active.includes(i) ? ' active' : '');
+                b.style.height = v * 2 + 'px'; b.innerText = v; viz.appendChild(b);
             });
         }
-
-        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-        async function merge(arr, start, mid, end) {
-            let left = arr.slice(start, mid + 1);
-            let right = arr.slice(mid + 1, end + 1);
-            let i = 0, j = 0, k = start;
-
-            while (i < left.length && j < right.length) {
-                render([k], []); // 顯示正在填入的位置
-                await sleep(300);
-                if (left[i] <= right[j]) {
-                    arr[k] = left[i++];
-                } else {
-                    arr[k] = right[j++];
-                }
-                k++;
-                render([], Array.from({length: k-start}, (_, v) => v + start));
-            }
-
-            while (i < left.length) {
-                arr[k++] = left[i++];
-                render(); await sleep(200);
-            }
-            while (j < right.length) {
-                arr[k++] = right[j++];
-                render(); await sleep(200);
-            }
+        async function runSort() {
+            await mergeSort(0, data.length - 1);
+            render(); alert("完成！");
         }
-
-        async function sort(start, end) {
-            if (start >= end) return;
-            let mid = Math.floor((start + end) / 2);
-            await sort(start, mid);
-            await sort(mid + 1, end);
-            await merge(data, start, mid, end);
+        async function mergeSort(s, e) {
+            if (s >= e) return;
+            let m = Math.floor((s + e) / 2);
+            await mergeSort(s, m);
+            await mergeSort(m + 1, e);
+            await merge(s, m, e);
+        }
+        async function merge(s, m, e) {
+            let L = data.slice(s, m + 1), R = data.slice(m + 1, e + 1);
+            let i = 0, j = 0, k = s;
+            while (i < L.length && j < R.length) {
+                render([k]);
+                await new Promise(r => setTimeout(r, 1050 - document.getElementById('speed').value));
+                data[k++] = L[i] <= R[j] ? L[i++] : R[j++];
+            }
+            while (i < L.length) data[k++] = L[i++];
+            while (j < R.length) data[k++] = R[j++];
             render();
         }
-
-        async function runMergeSort() {
-            document.getElementById('startBtn').disabled = true;
-            await sort(0, data.length - 1);
-            render([], [0,1,2,3,4,5,6]);
-            alert("合併排序完成！");
-            document.getElementById('startBtn').disabled = false;
-        }
-
-        function resetArray() {
-            data = [38, 27, 43, 3, 9, 82, 10];
-            render();
-        }
-
+        function reset() { data = [38, 27, 43, 3, 9, 82, 10]; render(); }
         render();
     </script>
 </body>

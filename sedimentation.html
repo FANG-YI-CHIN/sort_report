@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>沈澱排序 - 展示</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft JhengHei', sans-serif; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); min-height: 100vh; padding: 20px; }
+        .container { background: white; border-radius: 15px; max-width: 800px; margin: 0 auto; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .nav a { text-decoration: none; color: #f5576c; font-weight: bold; }
+        .visualizer { display: flex; align-items: flex-end; justify-content: center; height: 180px; gap: 8px; margin: 20px 0; background: #fff5f5; padding: 20px; border: 2px dashed #f5576c; border-radius: 10px; }
+        .bar { background: #f5576c; width: 35px; transition: 0.1s; display: flex; align-items: center; justify-content: center; color: white; border-radius: 4px; }
+        .controls { text-align: center; margin: 20px 0; }
+        button { padding: 10px 20px; background: #f5576c; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        pre { background: #333; color: #ffeb3b; padding: 15px; border-radius: 8px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav"><a href="index.html">← 返回首頁</a></div>
+        <h1 style="color:#f5576c">⏳ 沈澱排序法 (Sedimentation Sort)</h1>
+        <p>模擬顆粒重量沈降：將數值映射至對應地層，再依深度重新提取。</p>
+        <div class="controls">
+            速度：<input type="range" id="speed" min="50" max="1000" value="500">
+            <button onclick="startSort()">開始模擬</button>
+            <button onclick="reset()" style="background:#ccc; color:#333;">重置</button>
+        </div>
+        <div id="viz" class="visualizer"></div>
+        <pre>for (let x of data) layers[x - min]++;</pre>
+    </div>
+    <script>
+        let data = [5, 2, 9, 1, 5, 8, 3];
+        function render() {
+            const viz = document.getElementById('viz'); viz.innerHTML = '';
+            data.forEach(v => {
+                const b = document.createElement('div'); b.className = 'bar';
+                b.style.height = (v * 15) + 'px'; b.innerText = v; viz.appendChild(b);
+            });
+        }
+        async function startSort() {
+            let max = Math.max(...data), min = Math.min(...data);
+            let count = new Array(max - min + 1).fill(0);
+            for(let x of data) count[x-min]++;
+            let res = [], temp = [...data];
+            for(let i=0; i<count.length; i++) {
+                while(count[i] > 0) {
+                    res.push(i + min); count[i]--;
+                    data = [...res, ...new Array(temp.length - res.length).fill(0)];
+                    render();
+                    await new Promise(r => setTimeout(r, 1050 - document.getElementById('speed').value));
+                }
+            }
+            alert("沈澱完成！");
+        }
+        function reset() { data = [5, 2, 9, 1, 5, 8, 3]; render(); }
+        render();
+    </script>
+</body>
+</html>
