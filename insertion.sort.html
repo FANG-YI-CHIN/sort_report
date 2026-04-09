@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 插入排序法範例</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', 'Arial', sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .description {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .code-box {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 5px solid #2196F3;
+            margin-bottom: 20px;
+        }
+        #canvas {
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            background: white;
+        }
+        #result {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #d32f2f;
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 1em;
+            color: white;
+            background: #667eea;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            background: #333;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .back-button:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">回首頁</a>
+    <div class="container">
+        <h1>插入排序法 (Insertion Sort)</h1>
+        <p class="description">原始陣列：[64, 34, 25, 12, 22, 11, 90]</p>
+
+        <div class="code-box">
+            點擊「開始排序」按鈕查看視覺化排序過程。請打開瀏覽器開發者工具 (F12) 的 <strong>Console</strong> 查看詳細過程。
+        </div>
+
+        <canvas id="canvas" width="600" height="300"></canvas>
+
+        <button onclick="startSort()">開始排序</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let data = [64, 34, 25, 12, 22, 11, 90];
+        let steps = [];
+        let currentStep = 0;
+        let interval;
+
+        function drawArray(arr, highlight = []) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const barWidth = canvas.width / arr.length;
+            const maxVal = Math.max(...arr);
+            for (let i = 0; i < arr.length; i++) {
+                const height = (arr[i] / maxVal) * (canvas.height - 40);
+                ctx.fillStyle = highlight.includes(i) ? '#ff5722' : '#2196f3';
+                ctx.fillRect(i * barWidth, canvas.height - height, barWidth - 2, height);
+                ctx.fillStyle = '#333';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(arr[i], i * barWidth + barWidth / 2, canvas.height - height - 5);
+            }
+        }
+
+        function insertionSort(arr) {
+            let n = arr.length;
+            steps = [{ array: [...arr], highlight: [] }];
+            for (let i = 1; i < n; i++) {
+                let key = arr[i];
+                let j = i - 1;
+                steps.push({ array: [...arr], highlight: [i] });
+                while (j >= 0 && arr[j] > key) {
+                    arr[j + 1] = arr[j];
+                    j = j - 1;
+                    steps.push({ array: [...arr], highlight: [j + 1, j + 2] });
+                }
+                arr[j + 1] = key;
+                steps.push({ array: [...arr], highlight: [j + 1] });
+                console.log(`第 ${i} 步後: ${arr}`);
+            }
+            steps.push({ array: [...arr], highlight: [] });
+            return arr;
+        }
+
+        function startSort() {
+            data = [64, 34, 25, 12, 22, 11, 90];
+            insertionSort([...data]);
+            currentStep = 0;
+            if (interval) clearInterval(interval);
+            interval = setInterval(() => {
+                if (currentStep < steps.length) {
+                    drawArray(steps[currentStep].array, steps[currentStep].highlight);
+                    currentStep++;
+                } else {
+                    clearInterval(interval);
+                    document.getElementById('result').innerText = "排序完成！";
+                }
+            }, 500);
+        }
+
+        // 初始繪製
+        drawArray(data);
+    </script>
+</body>
+</html>
